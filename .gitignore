@@ -5,11 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-<<<<<<< HEAD
-vgg19_transfer_learning.pth
-=======
 *.pth
->>>>>>> 6be324ed094ebdb500b46dd7cf3e849066fea0b8
 
 # Distribution / packaging
 .Python
