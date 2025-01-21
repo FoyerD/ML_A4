@@ -17,6 +17,7 @@ eggs/
 .eggs/
 lib/
 data/
+datasets/
 yolov5/
 lib64/
 parts/
