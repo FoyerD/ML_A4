@@ -36,7 +36,7 @@ class CustomImageDataset(Dataset):
 
 # Hyperparameters
 batch_size = 32
-num_classes = 102  # Change this based on your dataset
+num_classes = 102 
 num_epochs = 10
 learning_rate = 0.001
 
