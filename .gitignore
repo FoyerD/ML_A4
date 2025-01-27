@@ -17,6 +17,8 @@ eggs/
 .eggs/
 lib/
 data/
+old_datasets/
+new_datasets/
 data_formaters/
 datasets/
 yolov5/
