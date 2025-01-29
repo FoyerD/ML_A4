@@ -17,11 +17,9 @@ eggs/
 ultra_yolo_datasets/
 .eggs/
 lib/
-vgg_data/
 old_datasets/
 new_datasets/
 data_formaters/
-datasets/
 yolov5/
 lib64/
 parts/
