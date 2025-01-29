@@ -49,18 +49,25 @@ transform = transforms.Compose([
 
 # Load the datasets
 train_dataset = CustomImageDataset(
-    image_dir='data/images/train',
-    label_dir='data/labels/train',
+    image_dir='vgg_data/images/train',
+    label_dir='vgg_data/labels/train',
     transform=transform
 )
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 
 val_dataset = CustomImageDataset(
-    image_dir='data/images/val',
-    label_dir='data/labels/val',
+    image_dir='vgg_data/images/val',
+    label_dir='vgg_data/labels/val',
     transform=transform
 )
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+
+test_dataset = CustomImageDataset(
+    image_dir='vgg_data/images/test',
+    label_dir='vgg_data/labels/test',
+    transform=transform
+)
+test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 # Load pre-trained VGG19 model
 model = models.vgg19(pretrained=True)
@@ -80,10 +87,20 @@ model = model.to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.classifier.parameters(), lr=learning_rate)
 
-train_loss = []# Training loop
+train_loss = []
+train_accuracy = []
+val_loss = []
+val_accuracy = []
+test_loss = []
+test_accuracy = []
+
 for epoch in range(num_epochs):
+    # Training loop
+    total_train = 0
+    correct_train = 0
     model.train()
     running_loss = 0.0
+    print(f"Train Number {epoch+1}")
     for images, labels in tqdm(train_loader):
         images, labels = images.to(device), labels.to(device)
         
@@ -94,27 +111,64 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         
-        running_loss += loss.item()
-        train_loss.append(running_loss/len(train_loader))
-
-    
-    print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(train_loader):.4f}")
-pd.DataFrame(train_loss).to_csv("training_loss.csv")
-
-
-# Validation loop
-model.eval()
-correct = 0
-total = 0
-with torch.no_grad():
-    for images, labels in val_loader:
-        images, labels = images.to(device), labels.to(device)
-        outputs = model(images)
         _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
+        total_train += labels.size(0)
+        correct_train += (predicted == labels).sum().item()
+        
+        running_loss += loss.item()
+    
+    train_loss.append(running_loss / len(train_loader))
+    train_accuracy.append(100 * correct_train / correct_train)
 
-print(f'Accuracy of the model on the validation set: {100 * correct / total:.2f}%')
+    # Validation + test loop
+    model.eval()
+    running_val_loss = 0.0
+    running_test_loss = 0.0
+    correct_val = 0
+    correct_test = 0
+    total_val = 0
+    total_test = 0
+    with torch.no_grad():
+        print(f"Val Number {epoch+1}")
+        for images, labels in tqdm(val_loader):
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            running_val_loss += loss.item()
+            
+            _, predicted = torch.max(outputs.data, 1)
+            total_val += labels.size(0)
+            correct_val += (predicted == labels).sum().item()
+        print(f"Test Number {epoch+1}")
+        for images, labels in tqdm(test_loader):
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+            running_test_loss += loss.item()
+            
+            _, predicted = torch.max(outputs.data, 1)
+            total_test += labels.size(0)
+            correct_test += (predicted == labels).sum().item()
+        
+    val_loss.append(running_val_loss / len(val_loader))
+    val_accuracy.append(100 * correct_val / total_val)
+    test_loss.append(running_test_loss / len(test_loader))
+    test_accuracy.append(100 * correct_test / total_test)
+    
+    
+    print(f"Epoch [{epoch+1}/{num_epochs}] | Train Loss: {train_loss[-1]:.4f} | Train Accuracy: {train_accuracy[-1]:.2f}% | Val Loss: {val_loss[-1]:.4f} | Val Accuracy: {val_accuracy[-1]:.2f}% | Test Loss: {test_loss[-1]:.4f} | Test Accuracy: {test_accuracy[-1]:.2f}%")
+
+# Save metrics to CSV
+metrics_df = pd.DataFrame({
+    'Epoch': list(range(1, num_epochs + 1)),
+    'Train Loss': train_loss,
+    'Train Accuracy (%)': train_accuracy,
+    'Val Loss': val_loss,
+    'Val Accuracy (%)': val_accuracy,
+    'Test Loss': test_loss,
+    'Test Accuracy (%)': test_accuracy
+})
+metrics_df.to_csv("vgg_training_metrics.csv", index=False)
 
 # Save the model
-torch.save(model.state_dict(), 'vgg19_transfer_learning.pth') #val acc: 80.17%
+torch.save(model.state_dict(), 'vgg19_transfer_learning.pth')
