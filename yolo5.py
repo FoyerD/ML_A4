@@ -27,8 +27,7 @@ def plot_graphs():
     epochs = df['epoch']  # Assuming there's an 'epoch' column
     train_classification_loss = df['train/cls_loss']  # Training classification loss
     val_classification_loss = df['val/cls_loss']      # Validation classification loss
-    train_classification_accuracy = df['classification_accuracy']  # Training accuracy
-    val_classification_accuracy = df['val_accuracy']  # Validation accuracy (you may need to adjust this)
+    train_classification_accuracy = df['metrics/mAP50-95(B)']  # Training accuracy
 
     # Create subplots
     plt.figure(figsize=(14, 8))
@@ -46,7 +45,6 @@ def plot_graphs():
     # Plot Training and Validation Classification Accuracy
     plt.subplot(2, 2, 2)
     plt.plot(epochs, train_classification_accuracy, label='Train Accuracy', color='green')
-    plt.plot(epochs, val_classification_accuracy, label='Validation Accuracy', color='red')
     plt.title('Classification Accuracy vs Epochs')
     plt.xlabel('Epochs')
     plt.ylabel('Accuracy')
@@ -58,4 +56,4 @@ def plot_graphs():
     plt.savefig("outputs/yolov5_training_plots_final.png")
 
 if __name__ == "__main__":
-    eval_yolo()
+    plot_graphs()

@@ -19,7 +19,11 @@ ultra_yolo_datasets/
 lib/
 old_datasets/
 new_datasets/
-data_formaters/
+data_formaters/jpg
+data_formaters/segmim
+data_formaters/imagelabels.mat
+data_formaters/setid.mat
+data_formaters/segs_yolo_data
 yolov5/
 lib64/
 parts/
