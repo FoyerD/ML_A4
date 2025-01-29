@@ -14,9 +14,10 @@ develop-eggs/
 dist/
 downloads/
 eggs/
+ultra_yolo_datasets/
 .eggs/
 lib/
-data/
+vgg_data/
 old_datasets/
 new_datasets/
 data_formaters/
