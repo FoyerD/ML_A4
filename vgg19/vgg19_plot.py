@@ -8,10 +8,8 @@ df = pd.read_csv('vgg_training_metrics.csv')
 epochs = df['Epoch']
 train_loss = df['Train Loss']
 val_loss = df['Val Loss']
-test_loss = df['Test Loss']
 train_accuracy = df['Train Accuracy (%)']
 val_accuracy = df['Val Accuracy (%)']
-test_accuracy = df['Test Accuracy (%)']
 
 
 # Create a figure with two subplots (1 row, 2 columns)
@@ -23,7 +21,6 @@ ax1.set_xlabel('Epochs')
 ax1.set_ylabel('Loss')
 ax1.plot(epochs, train_loss, label='Train Loss', color='tab:red', marker='o')
 ax1.plot(epochs, val_loss, label='Val Loss', color='tab:orange', marker='o')
-ax1.plot(epochs, test_loss, label='Test Loss', color='tab:olive', marker='o')
 ax1.legend()
 ax1.grid()
 
@@ -33,7 +30,6 @@ ax2.set_xlabel('Epochs')
 ax2.set_ylabel('Accuracy (%)')
 ax2.plot(epochs, train_accuracy, label='Train Accuracy (%)', color='tab:blue', marker='x')
 ax2.plot(epochs, val_accuracy, label='Val Accuracy (%)', color='tab:cyan', marker='x')
-ax2.plot(epochs, test_accuracy, label='Test Accuracy (%)',color='tab:purple', marker='x')
 ax2.legend()
 ax2.grid()
 
