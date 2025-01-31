@@ -17,8 +17,9 @@ eggs/
 ultra_yolo_datasets/
 .eggs/
 lib/
-old_datasets/
+old_yolo_datasets/
 new_datasets/
+
 data_formaters/jpg
 data_formaters/segmim
 data_formaters/imagelabels.mat
